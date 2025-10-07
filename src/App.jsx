@@ -39,7 +39,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ padding: 30, fontFamily: 'system-ui, sans-serif', color: 'green' }}>
+    <div style={{ padding: 30, fontFamily: 'system-ui, sans-serif', color: '#333' }}>
       <h1>mini-mern-connect</h1>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
