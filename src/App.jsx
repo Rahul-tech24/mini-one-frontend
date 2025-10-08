@@ -39,7 +39,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ padding: 30, fontFamily: 'system-ui, sans-serif', color: '#333' }}>
+    <div style={{ padding: 30, fontFamily: 'system-ui, sans-serif', color: '#87ca35ff' }}>
       <h1>mini-mern-connect</h1>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
@@ -58,7 +58,7 @@ export default function App() {
           {messages.map((m) => (
             <li key={m._id}>
               <div style={{ fontSize: 14 }}>{m.text}</div>
-              <small style={{ color: '#666' }}>{new Date(m.createdAt).toLocaleString()}</small>
+              <small style={{ color: '#289948ff' }}>{new Date(m.createdAt).toLocaleString()}</small>
             </li>
           ))}
         </ul>
