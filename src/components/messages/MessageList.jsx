@@ -9,12 +9,12 @@ export default function MessageList() {
   const { user } = useAuth();
 
   async function fetchMessages() {
-    const data = await apiFetch('/api/messages');
+    const data = await apiFetch('/api/messages', { credentials: 'include' });
     setMessages(data);
   }
 
   async function handleDelete(id) {
-    await apiFetch(`/api/messages/${id}`, { method: 'DELETE' });
+    await apiFetch(`/api/messages/${id}`, { method: 'DELETE', credentials: 'include' });
     fetchMessages();
   }
 

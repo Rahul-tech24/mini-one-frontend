@@ -11,9 +11,9 @@ export default function MessageForm({ onSuccess, editing }) {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!text.trim()) return;
-    const url = editing ? `/api/messages/${editing._id}` : '/api/messages';
+    const url = editing ? `/api/messages/${editing._id} credentials: 'include'` : '/api/messages';
     const method = editing ? 'PUT' : 'POST';
-    await apiFetch(url, { method, body: JSON.stringify({ text }) });
+    await apiFetch(url, { method, body: JSON.stringify({ text }), credentials: 'include' });
     setText('');
     onSuccess();
   }

@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
 
   async function fetchCurrentUser() {
     try {
-      const data = await apiFetch('/auth/me');
+      const data = await apiFetch('/auth/me', { credentials: 'include' });
       setUser(data.user || data);
     } catch {
       setUser(null);
@@ -24,9 +24,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function login(emailOrUsername, password) {
-    const data = await apiFetch('/auth/login', {
+    const data = await apiFetch('/auth/login',  {
       method: 'POST',
       body: JSON.stringify({ emailOrUsername, password }),
+      credentials: 'include'
     });
     setUser(data.user || data);
   }
@@ -34,13 +35,14 @@ export function AuthProvider({ children }) {
   async function register(username, email, password) {
     const data = await apiFetch('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password }),
+        credentials: 'include'
     });
     setUser(data.user || data);
   }
 
   async function logout() {
-    await apiFetch('/auth/logout', { method: 'POST' });
+    await apiFetch('/auth/logout', { method: 'POST', credentials: 'include' });
     setUser(null);
   }
 
