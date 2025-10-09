@@ -1,6 +1,6 @@
 // src/components/messages/MessageForm.jsx
 import { useState } from 'react';
-import { apiFetch } from '../../api/apiClient';
+import { apiFetch, ApiError } from '../../api/apiClient';
 import Button from '../ui/Button';
 import { useAuth } from '../../context/AuthContext';
 
@@ -12,7 +12,22 @@ export default function MessageForm({ onSuccess, editing }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!text.trim()) return;
+    
+    // Client-side validation
+    if (!text.trim()) {
+      setError('Message cannot be empty');
+      return;
+    }
+    
+    if (text.trim().length < 1) {
+      setError('Message must be at least 1 character');
+      return;
+    }
+    
+    if (text.trim().length > 1000) {
+      setError('Message must be less than 1000 characters');
+      return;
+    }
     
     setLoading(true);
     setError('');
@@ -22,13 +37,17 @@ export default function MessageForm({ onSuccess, editing }) {
       const method = editing ? 'PUT' : 'POST';
       await apiFetch(url, { 
         method, 
-        body: JSON.stringify({ text }), 
+        body: JSON.stringify({ text: text.trim() }), 
         credentials: 'include' 
       });
       setText('');
       onSuccess && onSuccess();
     } catch (err) {
-      setError(err.message || 'Failed to post message');
+      if (err instanceof ApiError) {
+        setError(err.message || 'Failed to post message');
+      } else {
+        setError('Failed to post message. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

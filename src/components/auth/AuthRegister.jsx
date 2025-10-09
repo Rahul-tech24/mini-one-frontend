@@ -15,10 +15,61 @@ export default function AuthRegister({ onSwitch }) {
     e.preventDefault();
     setErr('');
     setLoading(true);
+    
+    // Client-side validation
+    if (!username.trim()) {
+      setErr('Username is required');
+      setLoading(false);
+      return;
+    }
+    
+    if (username.trim().length < 3) {
+      setErr('Username must be at least 3 characters');
+      setLoading(false);
+      return;
+    }
+    
+    if (username.trim().length > 50) {
+      setErr('Username must be less than 50 characters');
+      setLoading(false);
+      return;
+    }
+    
+    if (!email.trim()) {
+      setErr('Email is required');
+      setLoading(false);
+      return;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setErr('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+    
+    if (!password.trim()) {
+      setErr('Password is required');
+      setLoading(false);
+      return;
+    }
+    
+    if (password.length < 6) {
+      setErr('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+    
+    if (password.length > 128) {
+      setErr('Password must be less than 128 characters');
+      setLoading(false);
+      return;
+    }
+    
     try {
-      await register(username, email, password);
+      await register(username.trim(), email.trim().toLowerCase(), password);
     } catch (error) {
-      setErr(error.message);
+      setErr(error.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

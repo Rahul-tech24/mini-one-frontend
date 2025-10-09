@@ -14,10 +14,30 @@ export default function AuthLogin({ onSwitch }) {
     e.preventDefault();
     setErr('');
     setLoading(true);
+    
+    // Client-side validation
+    if (!emailOrUsername.trim()) {
+      setErr('Email or username is required');
+      setLoading(false);
+      return;
+    }
+    
+    if (!password.trim()) {
+      setErr('Password is required');
+      setLoading(false);
+      return;
+    }
+    
+    if (password.length < 6) {
+      setErr('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+    
     try {
-      await login(emailOrUsername, password);
+      await login(emailOrUsername.trim(), password);
     } catch (error) {
-      setErr(error.message);
+      setErr(error.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

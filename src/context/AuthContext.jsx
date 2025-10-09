@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react';
-import { apiFetch } from '../api/apiClient';
+import { apiFetch, ApiError } from '../api/apiClient';
 
 const AuthContext = createContext();
 
@@ -12,7 +12,8 @@ export function AuthProvider({ children }) {
     try {
       const data = await apiFetch('/auth/me', { credentials: 'include' });
       setUser(data.user || data);
-    } catch {
+    } catch (error) {
+      // Don't show errors for auth check - user might just not be logged in
       setUser(null);
     } finally {
       setLoading(false);
@@ -24,26 +25,46 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function login(emailOrUsername, password) {
-    const data = await apiFetch('/auth/login',  {
-      method: 'POST',
-      body: JSON.stringify({ emailOrUsername, password }),
-      credentials: 'include'
-    });
-    setUser(data.user || data);
+    try {
+      const data = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ emailOrUsername, password }),
+        credentials: 'include'
+      });
+      setUser(data.user || data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw new Error(error.message);
+      }
+      throw error;
+    }
   }
 
   async function register(username, email, password) {
-    const data = await apiFetch('/auth/register', {
-      method: 'POST',
+    try {
+      const data = await apiFetch('/auth/register', {
+        method: 'POST',
         body: JSON.stringify({ username, email, password }),
         credentials: 'include'
-    });
-    setUser(data.user || data);
+      });
+      setUser(data.user || data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw new Error(error.message);
+      }
+      throw error;
+    }
   }
 
   async function logout() {
-    await apiFetch('/auth/logout', { method: 'POST', credentials: 'include' });
-    setUser(null);
+    try {
+      await apiFetch('/auth/logout', { method: 'POST', credentials: 'include' });
+    } catch (error) {
+      // Even if logout fails on server, clear local state
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+    }
   }
 
   const value = { user, loading, login, register, logout, fetchCurrentUser };
