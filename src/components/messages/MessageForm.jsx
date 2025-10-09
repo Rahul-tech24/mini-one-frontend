@@ -6,28 +6,67 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function MessageForm({ onSuccess, editing }) {
   const [text, setText] = useState(editing ? editing.text : '');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { user } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (!text.trim()) return;
-    const url = editing ? `/api/messages/${editing._id} credentials: 'include'` : '/api/messages';
-    const method = editing ? 'PUT' : 'POST';
-    await apiFetch(url, { method, body: JSON.stringify({ text }), credentials: 'include' });
-    setText('');
-    onSuccess();
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      const url = editing ? `/api/messages/${editing._id}` : '/api/messages';
+      const method = editing ? 'PUT' : 'POST';
+      await apiFetch(url, { 
+        method, 
+        body: JSON.stringify({ text }), 
+        credentials: 'include' 
+      });
+      setText('');
+      onSuccess && onSuccess();
+    } catch (err) {
+      setError(err.message || 'Failed to post message');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea
-        rows="3"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={user ? 'Write something...' : 'Sign in to post'}
-        disabled={!user}
-      />
-      <Button type="submit" disabled={!user}>{editing ? 'Update' : 'Send'}</Button>
-    </form>
+    <div>
+      <h3 style={{ marginBottom: '1rem', color: '#333' }}>
+        {editing ? 'Edit Message' : 'Share Your Thoughts'}
+      </h3>
+      
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <textarea
+            className="form-input"
+            rows="4"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={user ? 'What\'s on your mind?' : 'Sign in to post messages'}
+            disabled={!user}
+            maxLength={1000}
+            style={{ resize: 'vertical', minHeight: '100px' }}
+          />
+          <div style={{ textAlign: 'right', fontSize: '12px', color: '#999', marginTop: '4px' }}>
+            {text.length}/1000
+          </div>
+        </div>
+        
+        <Button 
+          type="submit" 
+          disabled={!user || loading || !text.trim()}
+          className="w-100"
+        >
+          {loading ? 'Posting...' : editing ? 'Update Message' : 'Post Message'}
+        </Button>
+        
+        {error && <div className="error-message">{error}</div>}
+      </form>
+    </div>
   );
 }

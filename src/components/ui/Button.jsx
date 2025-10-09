@@ -1,17 +1,14 @@
 // src/components/ui/Button.jsx
-export default function Button({ children, ...props }) {
+export default function Button({ children, variant = 'primary', className = '', ...props }) {
+  const baseClasses = 'btn';
+  const variantClass = variant === 'secondary' ? 'btn-secondary' : 
+                      variant === 'danger' ? 'btn-danger' : '';
+  const classes = `${baseClasses} ${variantClass} ${className}`.trim();
+
   return (
     <button
       {...props}
-      style={{
-        background: '#222',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '6px',
-        padding: '8px 12px',
-        cursor: 'pointer',
-        marginTop: '8px',
-      }}
+      className={classes}
     >
       {children}
     </button>

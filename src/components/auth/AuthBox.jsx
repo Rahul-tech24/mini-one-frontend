@@ -11,15 +11,18 @@ export default function AuthBox() {
 
   if (user) {
     return (
-      <div>
-        <p>Signed in as <strong>{user.username}</strong></p>
-        <Button onClick={logout}>Logout</Button>
+      <div className="user-info">
+        <span>👋 Welcome back, {user.username}!</span>
+        <Button onClick={logout} variant="secondary">Logout</Button>
       </div>
     );
   }
 
   return (
     <div>
+      <h2 style={{ marginBottom: '1.5rem', color: '#333' }}>
+        {mode === 'login' ? 'Sign In' : 'Create Account'}
+      </h2>
       {mode === 'login' ? (
         <AuthLogin onSwitch={() => setMode('register')} />
       ) : (

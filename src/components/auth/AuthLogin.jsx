@@ -25,22 +25,41 @@ export default function AuthLogin({ onSwitch }) {
 
   return (
     <form onSubmit={handleLogin}>
-      <input
-        placeholder="Email or Username"
-        value={emailOrUsername}
-        onChange={(e) => setEmailOrUsername(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <Button type="submit" disabled={loading}>Login</Button>
-      {err && <p style={{ color: 'red' }}>{err}</p>}
-      <p>Don’t have an account? <a href="#" onClick={onSwitch}>Register</a></p>
+      <div className="form-group">
+        <label htmlFor="emailOrUsername">Email or Username</label>
+        <input
+          id="emailOrUsername"
+          type="text"
+          className="form-input"
+          placeholder="Enter your email or username"
+          value={emailOrUsername}
+          onChange={(e) => setEmailOrUsername(e.target.value)}
+          required
+        />
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          className="form-input"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      
+      <Button type="submit" disabled={loading} className="w-100">
+        {loading ? 'Signing in...' : 'Sign In'}
+      </Button>
+      
+      {err && <div className="error-message">{err}</div>}
+      
+      <div className="auth-switch">
+        Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); onSwitch(); }}>Create one here</a>
+      </div>
     </form>
   );
 }

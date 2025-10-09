@@ -26,12 +26,57 @@ export default function AuthRegister({ onSwitch }) {
 
   return (
     <form onSubmit={handleRegister}>
-      <input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-      <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-      <Button type="submit" disabled={loading}>Register</Button>
-      {err && <p style={{ color: 'red' }}>{err}</p>}
-      <p>Already have an account? <a href="#" onClick={onSwitch}>Login</a></p>
+      <div className="form-group">
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          className="form-input"
+          placeholder="Choose a unique username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          minLength={3}
+          maxLength={50}
+        />
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          className="form-input"
+          placeholder="Enter your email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          className="form-input"
+          placeholder="Create a secure password (6+ characters)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+        />
+      </div>
+      
+      <Button type="submit" disabled={loading} className="w-100">
+        {loading ? 'Creating account...' : 'Create Account'}
+      </Button>
+      
+      {err && <div className="error-message">{err}</div>}
+      
+      <div className="auth-switch">
+        Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onSwitch(); }}>Sign in here</a>
+      </div>
     </form>
   );
 }
